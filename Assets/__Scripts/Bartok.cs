@@ -49,7 +49,7 @@ public class Bartok : MonoBehaviour
         deck.InitDeck(deckXML.text);
         Deck.Shuffle(ref deck.cards);
 
-        layout.GetComponent<BartokLayout>();
+        layout = GetComponent<BartokLayout>();
         layout.ReadLayout(layoutXML.text);
 
         drawPile = UpgradeCardsList(deck.cards);
@@ -106,13 +106,13 @@ public class Bartok : MonoBehaviour
         CardBartok tCB;
         for (int i = 0; i < numStartingCards; i++)
         {
-            for (int j = 0; i < 4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 tCB = Draw();
                 tCB.timeStart = Time.time + drawTimeStagger * (i * 4 + j);
                 players[(j + 1) % 4].AddCard(tCB);
             }
-        }
+        } 
         Invoke("DrawFirstTarget", drawTimeStagger * (numStartingCards * 4 + 4));
     }
 
@@ -151,7 +151,7 @@ public class Bartok : MonoBehaviour
         }
         CURRENT_PLAYER = players[num];
         phase = TurnPhase.pre;
-        CURRENT_PLAYER.TakeTurn();
+       CURRENT_PLAYER.TakeTurn();
 
         Utils.tr("Bartok:PassTurn()", "Old: " + lastPlayerNum, "New: " + CURRENT_PLAYER.playerNum);
     }

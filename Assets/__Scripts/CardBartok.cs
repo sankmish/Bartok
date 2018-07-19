@@ -95,7 +95,7 @@ public class CardBartok : Card {
 
                     if (reportFinishTo != null)
                     {
-                        reportFinishTo.SendMessage("CBSCallback", this);
+                        reportFinishTo.SendMessage("CBCallback", this);
                         reportFinishTo = null;
                     }
                     else if (callbackPlayer != null)
@@ -136,7 +136,7 @@ public class CardBartok : Card {
 
 	}
 
-    public override void OnMouseUpAsButton()
+    override public void OnMouseUpAsButton()
     {
         Bartok.S.CardClicked(this);
         base.OnMouseUpAsButton();

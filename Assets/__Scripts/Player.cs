@@ -67,9 +67,9 @@ public class Player{
 
             hand[i].MoveTo(pos, rotQ);
             hand[i].state = CBState.toHand;
-            hand[i].transform.localPosition = pos;
+           /* hand[i].transform.localPosition = pos;
             hand[i].transform.rotation = rotQ;
-            hand[i].state = CBState.hand;
+            hand[i].state = CBState.hand; */
 
             hand[i].faceUp = (type == PlayerType.human);
             hand[i].eventualSortOrder = i * 4;

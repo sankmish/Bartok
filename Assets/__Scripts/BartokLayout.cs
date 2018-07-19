@@ -37,7 +37,7 @@ public class BartokLayout : MonoBehaviour {
         xml = xmlr.xml["xml"][0];
 
         multiplier.x = float.Parse(xml["multiplier"][0].att("x"));
-        multiplier.y = float.Parse(xml["mulitplier"][0].att("y"));
+        multiplier.y = float.Parse(xml["multiplier"][0].att("y"));
 
         SlotDef tSD;
 
