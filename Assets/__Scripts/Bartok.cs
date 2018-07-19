@@ -12,7 +12,8 @@ public enum TurnPhase
     gameOver
 }
 
-public class Bartok : MonoBehaviour {
+public class Bartok : MonoBehaviour
+{
     static public Bartok S;
     static public Player CURRENT_PLAYER;
 
@@ -35,13 +36,15 @@ public class Bartok : MonoBehaviour {
     private BartokLayout layout;
     private Transform layoutAnchor;
 
-	// Use this for initialization
-	void Awake () {
+    // Use this for initialization
+    void Awake()
+    {
         S = this;
-	}
-	
-	// Update is called once per frame
-	void Start () {
+    }
+
+    // Update is called once per frame
+    void Start()
+    {
         deck = GetComponent<Deck>();
         deck.InitDeck(deckXML.text);
         Deck.Shuffle(ref deck.cards);
@@ -51,7 +54,7 @@ public class Bartok : MonoBehaviour {
 
         drawPile = UpgradeCardsList(deck.cards);
         LayoutGame();
-	}
+    }
 
     List<CardBartok> UpgradeCardsList(List<Card> lCD)
     {
@@ -61,7 +64,7 @@ public class Bartok : MonoBehaviour {
             lCB.Add(tCD as CardBartok);
         }
         return (lCB);
-    } 
+    }
 
     public void ArrangeDrawPile()
     {
@@ -91,7 +94,7 @@ public class Bartok : MonoBehaviour {
 
         Player p1;
         players = new List<Player>();
-        foreach(SlotDef tSD in layout.slotDefs)
+        foreach (SlotDef tSD in layout.slotDefs)
         {
             p1 = new Player();
             p1.handSlotDef = tSD;
@@ -119,7 +122,7 @@ public class Bartok : MonoBehaviour {
         tCB.reportFinishTo = this.gameObject;
     }
 
-    public void CBCallback (CardBartok cb)
+    public void CBCallback(CardBartok cb)
     {
         Utils.tr("Bartok:CBCallback()", cb.name);
         StartGame();
@@ -132,7 +135,7 @@ public class Bartok : MonoBehaviour {
 
     public void PassTurn(int num = -1)
     {
-        if (num== -1)
+        if (num == -1)
         {
             int ndx = players.IndexOf(CURRENT_PLAYER);
             num = (ndx + 1) % 4;
@@ -144,6 +147,7 @@ public class Bartok : MonoBehaviour {
         }
         CURRENT_PLAYER = players[num];
         phase = TurnPhase.pre;
+        CURRENT_PLAYER.TakeTurn();
 
         Utils.tr("Bartok:PassTurn()", "Old: " + lastPlayerNum, "New: " + CURRENT_PLAYER.playerNum);
     }
@@ -194,6 +198,38 @@ public class Bartok : MonoBehaviour {
         return (cd);
     }
 
+    public void CardClicked(CardBartok tCB)
+    {
+        if (CURRENT_PLAYER.type != PlayerType.human) return;
+        if (phase == TurnPhase.waiting) return;
+        switch (tCB.state)
+        {
+            case CBState.drawpile:
+                CardBartok cb = CURRENT_PLAYER.AddCard(Draw());
+                cb.callbackPlayer = CURRENT_PLAYER;
+                Utils.tr("Bartok:CardClicked()", "Draw", cb.name);
+                phase = TurnPhase.waiting;
+                break;
+
+            case CBState.hand:
+                if (ValidPlay(tCB))
+                {
+                    CURRENT_PLAYER.RemoveCard(tCB);
+                    MoveToTarget(tCB);
+                    tCB.callbackPlayer = CURRENT_PLAYER;
+                    Utils.tr("Bartok:CardClicked()", "Play", tCB.name, targetCard.name + " is target");
+                    phase = TurnPhase.waiting;
+                }
+                else
+                {
+                    Utils.tr("Bartok:CardClicked()", "Attempted to Play", tCB.name, targetCard.name + " is target");
+                }
+                break;
+        }
+
+    }
+
+}
    /*  void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -214,4 +250,4 @@ public class Bartok : MonoBehaviour {
         }
 
     }*/
-}
+
